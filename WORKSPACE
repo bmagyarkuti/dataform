@@ -35,8 +35,8 @@ protobuf_deps()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "5bf77cc2d13ddf9124f4c1453dd96063774d755d4fc75d922471540d1c9a8ea8",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.0.0/rules_nodejs-2.0.0.tar.gz"],
+    sha256 = "9d93d4e1340c43dbf6b2fd66b683d89630a6310bf8be3bf40ec96685dcacc26c",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.3.3/rules_nodejs-2.3.3.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "yarn_install")
@@ -45,6 +45,7 @@ node_repositories(
     node_repositories = {
         "16.16.0-darwin_amd64": ("node-v16.16.0-darwin-x64.tar.gz", "node-v16.16.0-darwin-x64", "982edd0fad364ad6e2d72161671544ab9399bd0ca8c726bde3cd07775c4c709a"),
         "16.16.0-linux_amd64": ("node-v16.16.0-linux-x64.tar.xz", "node-v16.16.0-linux-x64", "edcb6e9bb049ae365611aa209fc03c4bfc7e0295dbcc5b2f1e710ac70384a8ec"),
+        "16.16.0-linux_arm64": ("node-v16.16.0-linux-arm64.tar.xz", "node-v16.16.0-linux-arm64", "6cb8f1353480646c1cd8ab9911995e5591e1a97811f43ea4ab3e946a57e7c80e"),
         "16.16.0-windows_amd64": ("node-v16.16.0-win-x64.zip", "node-v16.16.0-win-x64", "c657acc98af55018c8fd6113c7e08d67c8083af75ba0306f9561b0117abc39d4"),
     },
     node_version = "16.16.0",
