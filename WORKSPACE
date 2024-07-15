@@ -59,15 +59,6 @@ yarn_install(
     yarn_lock = "//:yarn.lock",
 )
 
-load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")
-
-install_bazel_dependencies()
-
-# load("@npm//@bazel/typescript:index.bzl", "ts_library")
-# load("@npm//@bazel/typescript:index.bzl", "ts_setup_workspace")
-
-# ts_setup_workspace()
-
 # Go/Gazelle requirements/dependencies.
 http_archive(
     name = "io_bazel_rules_go",
