@@ -26,7 +26,6 @@ ts_library(
     ],
     deps = [
         ":vm",
-        "@npm//source-map-support",
     ],
 )
 
@@ -42,8 +41,7 @@ nodejs_binary(
     name = "compile",
     data = [
         ":vm",
-        "@npm//source-map-support",
     ],
     entry_point = ":compile.ts",
-    templated_args = ["--node_options=--require=source-map-support/register"],
+    templated_args = ["--bazel_patch_module_resolver"],
 )

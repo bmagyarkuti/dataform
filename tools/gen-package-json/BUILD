@@ -16,10 +16,9 @@ load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
 nodejs_binary(
     name = "bin",
-    templated_args = ["--node_options=--require=source-map-support/register"],
     data = [
         ":json-merge",
-        "@npm//source-map-support",
+        templated_args = ["--bazel_patch_module_resolver"],
     ],
     entry_point = ":index.ts",
 )
