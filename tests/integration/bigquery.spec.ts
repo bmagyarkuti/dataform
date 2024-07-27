@@ -27,7 +27,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
 
       // Drop schemas to make sure schema creation works.
       await dbadapter.execute(
-        "drop schema if exists `dataform-open-source.df_integration_test_project_e2e` cascade"
+        "drop schema if exists `mbarna-kubernetes-clusters.df_integration_test_project_e2e` cascade"
       );
 
       // Run the project.
@@ -39,8 +39,8 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
 
       // Check the status of action execution.
       const expectedFailedActions = [
-        "dataform-open-source.df_integration_test_assertions_project_e2e.example_assertion_fail",
-        "dataform-open-source.df_integration_test_project_e2e.example_operation_partial_fail"
+        "mbarna-kubernetes-clusters.df_integration_test_assertions_project_e2e.example_assertion_fail",
+        "mbarna-kubernetes-clusters.df_integration_test_project_e2e.example_operation_partial_fail"
       ];
       for (const actionName of Object.keys(actionMap)) {
         const expectedResult = expectedFailedActions.includes(actionName)
@@ -54,13 +54,13 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
 
       expect(
         actionMap[
-          "dataform-open-source.df_integration_test_assertions_project_e2e.example_assertion_fail"
+          "mbarna-kubernetes-clusters.df_integration_test_assertions_project_e2e.example_assertion_fail"
         ].tasks[1].errorMessage
       ).to.eql("bigquery error: Assertion failed: query returned 1 row(s).");
 
       expect(
         actionMap[
-          "dataform-open-source.df_integration_test_project_e2e.example_operation_partial_fail"
+          "mbarna-kubernetes-clusters.df_integration_test_project_e2e.example_operation_partial_fail"
         ].tasks[0].errorMessage
       ).to.eql("bigquery error: Query error: Unrecognized name: invalid_column at [3:8]");
     });
@@ -104,7 +104,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
         const [incrementalRows, incrementalMergeRows] = await Promise.all([
           getTableRows(
             {
-              database: "dataform-open-source",
+              database: "mbarna-kubernetes-clusters",
               schema: "df_integration_test_incremental_tables",
               name: "example_incremental"
             },
@@ -113,7 +113,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
           ),
           getTableRows(
             {
-              database: "dataform-open-source",
+              database: "mbarna-kubernetes-clusters",
               schema: "df_integration_test_incremental_tables",
               name: "example_incremental_merge"
             },
@@ -150,7 +150,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
       for (const expectedMetadata of [
         {
           target: {
-            database: "dataform-open-source",
+            database: "mbarna-kubernetes-clusters",
             schema: "df_integration_test_dataset_metadata",
             name: "example_incremental"
           },
@@ -189,7 +189,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
         },
         {
           target: {
-            database: "dataform-open-source",
+            database: "mbarna-kubernetes-clusters",
             schema: "df_integration_test_dataset_metadata",
             name: "example_view"
           },
@@ -257,7 +257,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
       await dfapi.run(dbadapter, executionGraph).result();
 
       const view = keyBy(compiledGraph.tables, t => targetAsReadableString(t.target))[
-        "dataform-open-source.df_integration_test_evaluate.example_view"
+        "mbarna-kubernetes-clusters.df_integration_test_evaluate.example_view"
       ];
       let evaluations = await dbadapter.evaluate(dataform.Table.create(view));
       expect(evaluations.length).to.equal(1);
@@ -266,7 +266,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
       );
 
       const materializedView = keyBy(compiledGraph.tables, t => targetAsReadableString(t.target))[
-        "dataform-open-source.df_integration_test_evaluate.example_materialized_view"
+        "mbarna-kubernetes-clusters.df_integration_test_evaluate.example_materialized_view"
       ];
       evaluations = await dbadapter.evaluate(dataform.Table.create(materializedView));
       expect(evaluations.length).to.equal(1);
@@ -275,7 +275,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
       );
 
       const table = keyBy(compiledGraph.tables, t => targetAsReadableString(t.target))[
-        "dataform-open-source.df_integration_test_evaluate.example_table"
+        "mbarna-kubernetes-clusters.df_integration_test_evaluate.example_table"
       ];
       evaluations = await dbadapter.evaluate(dataform.Table.create(table));
       expect(evaluations.length).to.equal(1);
@@ -284,7 +284,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
       );
 
       const operation = keyBy(compiledGraph.operations, t => targetAsReadableString(t.target))[
-        "dataform-open-source.df_integration_test_evaluate.example_operation"
+        "mbarna-kubernetes-clusters.df_integration_test_evaluate.example_operation"
       ];
       evaluations = await dbadapter.evaluate(dataform.Operation.create(operation));
       expect(evaluations.length).to.equal(1);
@@ -293,7 +293,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
       );
 
       const assertion = keyBy(compiledGraph.assertions, t => targetAsReadableString(t.target))[
-        "dataform-open-source.df_integration_test_assertions_evaluate.example_assertion_pass"
+        "mbarna-kubernetes-clusters.df_integration_test_assertions_evaluate.example_assertion_pass"
       ];
       evaluations = await dbadapter.evaluate(dataform.Assertion.create(assertion));
       expect(evaluations.length).to.equal(1);
@@ -302,7 +302,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
       );
 
       const incremental = keyBy(compiledGraph.tables, t => targetAsReadableString(t.target))[
-        "dataform-open-source.df_integration_test_evaluate.example_incremental"
+        "mbarna-kubernetes-clusters.df_integration_test_evaluate.example_incremental"
       ];
       evaluations = await dbadapter.evaluate(dataform.Table.create(incremental));
       expect(evaluations.length).to.equal(2);
@@ -318,7 +318,7 @@ suite("@dataform/integration/bigquery", { parallel: true }, ({ before, after }) 
       const target = (name: string) => ({
         schema: "df_integration_test",
         name,
-        database: "dataform-open-source"
+        database: "mbarna-kubernetes-clusters"
       });
 
       let evaluations = await dbadapter.evaluate(

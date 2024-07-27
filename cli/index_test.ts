@@ -16,7 +16,7 @@ suite("@dataform/cli", ({ afterEach }) => {
 
   test(
     "compile throws an error when dataformCoreVersion not in workflow_settings.yaml and no " +
-      "package.json exists",
+    "package.json exists",
     async () => {
       const projectDir = tmpDirFixture.createNewTmpDir();
       fs.writeFileSync(
@@ -29,7 +29,7 @@ suite("@dataform/cli", ({ afterEach }) => {
           .stderr
       ).contains(
         "dataformCoreVersion must be specified either in workflow_settings.yaml or via a " +
-          "package.json"
+        "package.json"
       );
     }
   );
@@ -60,9 +60,9 @@ suite("@dataform/cli", ({ afterEach }) => {
         .stderr
     ).contains(
       "Could not find a recent installed version of @dataform/core in the project. Check that " +
-        "either `dataformCoreVersion` is specified in `workflow_settings.yaml`, or " +
-        "`@dataform/core` is specified in `package.json`. If using `package.json`, then run " +
-        "`dataform install`."
+      "either `dataformCoreVersion` is specified in `workflow_settings.yaml`, or " +
+      "`@dataform/core` is specified in `package.json`. If using `package.json`, then run " +
+      "`dataform install`."
     );
   });
 
@@ -109,7 +109,7 @@ defaultAssertionDataset: dataform_assertions
         .stderr
     ).contains(
       "Package installation is only supported when specifying @dataform/core version in " +
-        "'package.json'"
+      "'package.json'"
     );
   });
 
@@ -149,7 +149,7 @@ defaultAssertionDataset: dataform_assertions
 
     // Initialize a project using the CLI, don't install packages.
     await getProcessResult(
-      execFile(nodePath, [cliEntryPointPath, "init", projectDir, "dataform-open-source", "US"])
+      execFile(nodePath, [cliEntryPointPath, "init", projectDir, "mbarna-kubernetes-clusters", "US"])
     );
 
     // Install packages manually to get around bazel read-only sandbox issues.
@@ -208,14 +208,14 @@ select 1 as \${dataform.projectConfig.vars.testVar2}
           type: "table",
           enumType: "TABLE",
           target: {
-            database: "dataform-open-source",
+            database: "mbarna-kubernetes-clusters",
             schema: "dataform_test_schema_suffix",
             name: "example"
           },
           canonicalTarget: {
             schema: "dataform",
             name: "example",
-            database: "dataform-open-source"
+            database: "mbarna-kubernetes-clusters"
           },
           query: "\n\nselect 1 as testValue2\n",
           disabled: false,
@@ -227,7 +227,7 @@ select 1 as \${dataform.projectConfig.vars.testVar2}
         warehouse: "bigquery",
         defaultSchema: "dataform",
         assertionSchema: "dataform_assertions",
-        defaultDatabase: "dataform-open-source",
+        defaultDatabase: "mbarna-kubernetes-clusters",
         defaultLocation: "US",
         vars: {
           testVar1: "testValue1",
@@ -239,7 +239,7 @@ select 1 as \${dataform.projectConfig.vars.testVar2}
       dataformCoreVersion: version,
       targets: [
         {
-          database: "dataform-open-source",
+          database: "mbarna-kubernetes-clusters",
           schema: "dataform",
           name: "example"
         }
@@ -271,14 +271,14 @@ select 1 as \${dataform.projectConfig.vars.testVar2}
           hermeticity: "HERMETIC",
           tableType: "table",
           target: {
-            database: "dataform-open-source",
+            database: "mbarna-kubernetes-clusters",
             name: "example",
             schema: "dataform"
           },
           tasks: [
             {
               statement:
-                "create or replace table `dataform-open-source.dataform.example` as \n\nselect 1 as testValue2",
+                "create or replace table `mbarna-kubernetes-clusters.dataform.example` as \n\nselect 1 as testValue2",
               type: "statement"
             }
           ],
@@ -287,7 +287,7 @@ select 1 as \${dataform.projectConfig.vars.testVar2}
       ],
       projectConfig: {
         assertionSchema: "dataform_assertions",
-        defaultDatabase: "dataform-open-source",
+        defaultDatabase: "mbarna-kubernetes-clusters",
         defaultLocation: "europe",
         defaultSchema: "dataform",
         warehouse: "bigquery",

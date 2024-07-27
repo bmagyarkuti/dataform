@@ -1,12 +1,16 @@
-load("//tools/gcloud:secrets.bzl", "gcloud_secret")
+# load("//tools/gcloud:secrets.bzl", "gcloud_secret")
 
-package(default_visibility = ["//visibility:public"])
-
-gcloud_secret(
-    name = "bigquery.json",
-    testonly = 1,
-    ciphertext_file = ":bigquery.json.enc",
-    project = "dataform-open-source",
-    key = "dataform-builder-key",
-    keyring = "dataform-builder-keyring",
+exports_files(
+    ["bigquery.json"],
+    visibility=["//visibility:public"],
 )
+# package(default_visibility = ["//visibility:public"])
+
+# gcloud_secret(
+#     name = "bigquery.json",
+#     testonly = 1,
+#     ciphertext_file = ":bigquery.json.enc",
+#     project = "mbarna-kubernetes-clusters",
+#     key = "dataform-builder-key",
+#     keyring = "dataform-builder-keyring",
+# )
