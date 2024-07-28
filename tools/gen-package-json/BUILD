@@ -16,9 +16,7 @@ load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
 nodejs_binary(
     name = "bin",
-    data = [
-        ":json-merge",
-        templated_args = ["--bazel_patch_module_resolver"],
-    ],
+    templated_args = ["--bazel_patch_module_resolver"],
+    data = [":json-merge"],
     entry_point = ":index.ts",
 )
