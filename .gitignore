@@ -15,4 +15,3 @@ bazel-*
 go.sum
 
 .df-credentials.json
-test_credentials/bigquery.json
