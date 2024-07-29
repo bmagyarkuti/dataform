@@ -18,12 +18,12 @@ nodejs_binary(
     name = "bin",
     data = [
         ":cli",
-        "@npm//source-map-support"
+        "@npm//source-map-support",
     ],
     entry_point = ":index.ts",
     templated_args = [
         "--node_options=--require=source-map-support/register",
-        "--bazel_patch_module_resolver"
+        "--bazel_patch_module_resolver",
     ],
 )
 

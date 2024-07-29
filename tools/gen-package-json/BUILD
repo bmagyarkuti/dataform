@@ -18,7 +18,7 @@ nodejs_binary(
     name = "bin",
     templated_args = [
         "--node_options=--require=source-map-support/register",
-        "--bazel_patch_module_resolver"
+        "--bazel_patch_module_resolver",
     ],
     data = [
         ":json-merge",

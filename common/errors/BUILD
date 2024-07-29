@@ -22,7 +22,7 @@ ts_test_suite(
     ],
     templated_args = [
         "--node_options=--require=source-map-support/register",
-        "--bazel_patch_module_resolver"
+        "--bazel_patch_module_resolver",
     ],
     deps = [
         ":errors",

@@ -47,6 +47,6 @@ nodejs_binary(
     entry_point = ":compile.ts",
     templated_args = [
         "--node_options=--require=source-map-support/register",
-        "--bazel_patch_module_resolver"
+        "--bazel_patch_module_resolver",
     ],
 )
