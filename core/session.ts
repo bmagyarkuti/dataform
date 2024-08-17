@@ -370,7 +370,7 @@ export class Session {
       declarations: this.compileGraphChunk(
         this.actions.filter(action => action instanceof Declaration)
       ),
-      tests: this.compileGraphChunk(Object.values(this.tests)),
+      tests: this.compileGraphChunk(Object.values(this.tests).filter(test => !test.isSkipped())),
       notebooks: this.compileGraphChunk(this.actions.filter(action => action instanceof Notebook)),
       dataPreparations: this.compileGraphChunk(
         this.actions.filter(action => action instanceof DataPreparation)

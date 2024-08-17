@@ -86,3 +86,14 @@ test("wrong row contents")
         select 'sup?' as col3, 3 as col2, 9.5 as col3, true as col4
     `
   );
+
+test("skipped")
+  .skip()
+  .dataset("example_table")
+  .input(
+    "sample_data",
+    `select 'hi' as col1, 1 as col2, 3.5 as col3, true as col4, date '2020-07-23' as col5`
+  )
+  .expect(
+    `select 'ha' as col1, 2 as col2, 40 as col3, false as col4, date '2020-08-01' as col5`
+  );

@@ -41,6 +41,7 @@ export class Test extends ActionBuilder<dataform.Test> {
     Contextable<ICommonContext, string>
   >(targetStringifier);
 
+  private skipped: boolean = false;
   private datasetToTest: Resolvable;
   private contextableQuery: Contextable<ICommonContext, string>;
 
@@ -58,6 +59,11 @@ export class Test extends ActionBuilder<dataform.Test> {
     if (config.dataset) {
       this.dataset(config.dataset);
     }
+    return this;
+  }
+
+  public skip() {
+    this.skipped = true;
     return this;
   }
 
@@ -89,6 +95,13 @@ export class Test extends ActionBuilder<dataform.Test> {
   public getTarget(): undefined {
     // The test action type has no target because it is not processed during regular execution.
     return undefined;
+  }
+
+  /**
+   * @hidden
+   */
+  public isSkipped(): boolean {
+    return this.skipped;
   }
 
   public compile() {
