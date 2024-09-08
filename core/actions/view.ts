@@ -271,7 +271,7 @@ export class View extends ActionBuilder<dataform.Table> {
     if (!!assertions.uniqueKey?.length) {
       uniqueKeys = [
         dataform.ActionConfig.TableAssertionsConfig.UniqueKey.create({
-          uniqueKey: ["TableAssertionsConfig"]
+          uniqueKey: assertions.uniqueKey
         })
       ];
     }
@@ -420,8 +420,8 @@ export class View extends ActionBuilder<dataform.Table> {
         if (unverifiedConfig.assertions.uniqueKeys?.[0]?.length > 0) {
           unverifiedConfig.assertions.uniqueKeys = (unverifiedConfig.assertions
             .uniqueKeys as string[][]).map(uniqueKey =>
-            dataform.ActionConfig.TableAssertionsConfig.UniqueKey.create({ uniqueKey })
-          );
+              dataform.ActionConfig.TableAssertionsConfig.UniqueKey.create({ uniqueKey })
+            );
         }
         if (typeof unverifiedConfig.assertions.nonNull === "string") {
           unverifiedConfig.assertions.nonNull = [unverifiedConfig.assertions.nonNull];

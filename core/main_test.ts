@@ -115,7 +115,7 @@ suite("@dataform/core", ({ afterEach }) => {
       ].forEach(testConfig => {
         test(
           `assertions target context functions with project suffix '${testConfig.projectSuffix}', ` +
-            `dataset suffix '${testConfig.datasetSuffix}', and name prefix '${testConfig.namePrefix}'`,
+          `dataset suffix '${testConfig.datasetSuffix}', and name prefix '${testConfig.namePrefix}'`,
           () => {
             const projectDir = tmpDirFixture.createNewTmpDir();
             fs.writeFileSync(
@@ -135,8 +135,8 @@ suite("@dataform/core", ({ afterEach }) => {
             ).deep.equals([]);
             expect(asPlainObject(result.compile.compiledGraph.assertions[0].query)).deep.equals(
               `defaultProject${testConfig.projectSuffix ? `_suffix` : ""}.` +
-                `defaultDataset${testConfig.datasetSuffix ? `_suffix` : ""}.` +
-                `${testConfig.namePrefix ? `prefix_` : ""}name`
+              `defaultDataset${testConfig.datasetSuffix ? `_suffix` : ""}.` +
+              `${testConfig.namePrefix ? `prefix_` : ""}name`
             );
           }
         );
@@ -914,20 +914,20 @@ nodes:
 
       fs.writeFileSync(
         path.join(projectDir, "definitions/data_preparation.yaml"),
-          dataPreparationYaml
+        dataPreparationYaml
       );
 
       // Generate Base64 encoded representation of the YAML.
       const dataPreparationAsObject = loadYaml(dataPreparationYaml);
       const dataPreparationDefinition = verifyObjectMatchesProto(
-          dataform.dataprep.DataPreparation,
-          dataPreparationAsObject as {
-            [key: string]: any;
-          }
+        dataform.dataprep.DataPreparation,
+        dataPreparationAsObject as {
+          [key: string]: any;
+        }
       );
       const base64encodedContents = encode64(
-          dataform.dataprep.DataPreparation,
-          dataPreparationDefinition
+        dataform.dataprep.DataPreparation,
+        dataPreparationDefinition
       );
 
       const result = runMainInVm(coreExecutionRequestFromPath(projectDir));
@@ -1797,18 +1797,10 @@ SELECT 1`
 
     test("for views", () => {
       const projectDir = tmpDirFixture.createNewTmpDir();
-      fs.writeFileSync(
-        path.join(projectDir, "workflow_settings.yaml"),
-        VALID_WORKFLOW_SETTINGS_YAML
-      );
-      fs.mkdirSync(path.join(projectDir, "definitions"));
-      fs.writeFileSync(path.join(projectDir, "definitions/operation.sqlx"), "SELECT 1");
-      fs.writeFileSync(
-        path.join(projectDir, "definitions/filename.sqlx"),
-        `
+      const viewDefinition = (name: string, assertions: string) => `
 config {
   type: "view",
-  name: "name",
+  name: "${name}",
   schema: "dataset",
   database: "project",
   dependencies: ["operation"],
@@ -1826,61 +1818,107 @@ ${exampleActionDescriptor.inputSqlxConfigBlock}
   },
   dependOnDependencyAssertions: true,
   hermetic: true,
-${exampleBuiltInAssertions.inputSqlxConfigBlock}
+${assertions}
 }
-SELECT 1`
+SELECT 1`;
+      const expectedCompiledView = (name: string, fileName: string) => ({
+        target: {
+          database: "project",
+          schema: "dataset",
+          name
+        },
+        canonicalTarget: {
+          database: "project",
+          schema: "dataset",
+          name
+        },
+        type: "view",
+        disabled: true,
+        hermeticity: "HERMETIC",
+        bigquery: {
+          additionalOptions: {
+            option1Key: "option1",
+            option2Key: "option2"
+          },
+          labels: {
+            key: "val"
+          }
+        },
+        tags: ["tag1", "tag2"],
+        dependencyTargets: [
+          {
+            database: "defaultProject",
+            schema: "defaultDataset",
+            name: "operation"
+          }
+        ],
+        enumType: "VIEW",
+        fileName,
+        query: "\n\nSELECT 1",
+        actionDescriptor: {
+          ...exampleActionDescriptor.outputActionDescriptor,
+          // sqlxConfig.bigquery.labels are placed as bigqueryLabels.
+          bigqueryLabels: {
+            key: "val"
+          }
+        },
+        materialized: true
+      });
+      fs.writeFileSync(
+        path.join(projectDir, "workflow_settings.yaml"),
+        VALID_WORKFLOW_SETTINGS_YAML
+      );
+      fs.mkdirSync(path.join(projectDir, "definitions"));
+      fs.writeFileSync(path.join(projectDir, "definitions/operation.sqlx"), "SELECT 1");
+      fs.writeFileSync(
+        path.join(projectDir, "definitions/filename.sqlx"),
+        viewDefinition("name", exampleBuiltInAssertions.inputSqlxConfigBlock)
+      );
+      fs.writeFileSync(
+        path.join(projectDir, "definitions/filename2.sqlx"),
+        viewDefinition("name2", `
+assertions: {
+  uniqueKey: ["uniqueKey1"],
+}`)
       );
 
       const result = runMainInVm(coreExecutionRequestFromPath(projectDir));
 
       expect(result.compile.compiledGraph.graphErrors.compilationErrors).deep.equals([]);
       expect(asPlainObject(result.compile.compiledGraph.tables)).deep.equals([
-        {
-          target: {
-            database: "project",
-            schema: "dataset",
-            name: "name"
-          },
-          canonicalTarget: {
-            database: "project",
-            schema: "dataset",
-            name: "name"
-          },
-          type: "view",
-          disabled: true,
-          hermeticity: "HERMETIC",
-          bigquery: {
-            additionalOptions: {
-              option1Key: "option1",
-              option2Key: "option2"
-            },
-            labels: {
-              key: "val"
-            }
-          },
-          tags: ["tag1", "tag2"],
-          dependencyTargets: [
-            {
-              database: "defaultProject",
-              schema: "defaultDataset",
-              name: "operation"
-            }
-          ],
-          enumType: "VIEW",
-          fileName: "definitions/filename.sqlx",
-          query: "\n\nSELECT 1",
-          actionDescriptor: {
-            ...exampleActionDescriptor.outputActionDescriptor,
-            // sqlxConfig.bigquery.labels are placed as bigqueryLabels.
-            bigqueryLabels: {
-              key: "val"
-            }
-          },
-          materialized: true
-        }
+        expectedCompiledView("name", "definitions/filename.sqlx"),
+        expectedCompiledView("name2", "definitions/filename2.sqlx")
       ]);
       expect(asPlainObject(result.compile.compiledGraph.assertions)).deep.equals(
-        exampleBuiltInAssertions.outputAssertions
+        [...exampleBuiltInAssertions.outputAssertions, {
+          target: {
+            database: "defaultProject",
+            schema: "defaultDataset",
+            name: "dataset_name2_assertions_uniqueKey_0"
+          },
+          canonicalTarget: {
+            database: "defaultProject",
+            schema: "defaultDataset",
+            name: "dataset_name2_assertions_uniqueKey_0"
+          },
+          dependencyTargets: [
+            {
+              database: "project",
+              schema: "dataset",
+              name: "name2"
+            }
+          ],
+          disabled: true,
+          fileName: "definitions/filename2.sqlx",
+          parentAction: {
+            database: "project",
+            schema: "dataset",
+            name: "name2"
+          },
+          query:
+            "\nSELECT\n  *\nFROM (\n  SELECT\n    uniqueKey1,\n    COUNT(1) AS index_row_count\n  FROM `project.dataset.name2`\n  GROUP BY uniqueKey1\n  ) AS data\nWHERE index_row_count > 1\n",
+          tags: ["tag1", "tag2"]
+        } as dataform.IAssertion]
       );
     });
 
